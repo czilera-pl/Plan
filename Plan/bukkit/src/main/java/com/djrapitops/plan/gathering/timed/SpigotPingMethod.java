@@ -23,42 +23,52 @@
  */
 package com.djrapitops.plan.gathering.timed;
 
-import org.bukkit.entity.Player;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.bukkit.entity.Player;
 
 public class SpigotPingMethod implements PingMethod {
 
-    private String reasonForUnavailability;
+  private static final Method PLAYER_GET_PING;
 
-    @Override
-    public boolean isAvailable() {
-        try {
-            //Only available in Paper
-            Class.forName("org.bukkit.entity.Player").getDeclaredMethod("getPing");
-            return true;
-        } catch (ClassNotFoundException | NoSuchMethodException noSuchMethodEx) {
-            reasonForUnavailability = noSuchMethodEx.toString();
-            return false;
-        }
+  static {
+    try {
+      PLAYER_GET_PING = Player.class.getDeclaredMethod("getPing");
+    } catch (NoSuchMethodException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private String reasonForUnavailability;
+
+  @Override
+  public boolean isAvailable() {
+    try {
+      //Only available in Paper
+      Class.forName("org.bukkit.entity.Player").getDeclaredMethod("getPing");
+      return true;
+    } catch (ClassNotFoundException | NoSuchMethodException noSuchMethodEx) {
+      reasonForUnavailability = noSuchMethodEx.toString();
+      return false;
+    }
+  }
+
+  @Override
+  public int getPing(Player player) {
+    if (reasonForUnavailability != null) {
+      return -1;
     }
 
-    @Override
-    public int getPing(Player player) {
-        if (reasonForUnavailability != null) return -1;
-
-        try {
-            Method getPing = player.getClass().getDeclaredMethod("getPing");
-            return (int) getPing.invoke(player);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            reasonForUnavailability = e.toString();
-            return -1;
-        }
+    try {
+      return (int) PLAYER_GET_PING.invoke(player);
+    } catch (IllegalAccessException | InvocationTargetException e) {
+      reasonForUnavailability = e.toString();
+      return -1;
     }
+  }
 
-    @Override
-    public String getReasonForUnavailability() {
-        return reasonForUnavailability;
-    }
+  @Override
+  public String getReasonForUnavailability() {
+    return reasonForUnavailability;
+  }
 }

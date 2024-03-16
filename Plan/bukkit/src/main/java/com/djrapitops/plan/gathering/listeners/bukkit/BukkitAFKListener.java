@@ -70,7 +70,6 @@ public class BukkitAFKListener implements Listener {
         try {
             Player player = event.getPlayer();
             UUID uuid = player.getUniqueId();
-            long time = System.currentTimeMillis();
 
             boolean ignored = ignorePermissionInfo.computeIfAbsent(uuid, keyUUID -> player.hasPermission(Permissions.IGNORE_AFK.getPermission()));
             if (ignored) {
@@ -81,15 +80,10 @@ public class BukkitAFKListener implements Listener {
                 ignorePermissionInfo.put(uuid, false);
             }
 
-            afkTracker.performedAction(uuid, time);
+            afkTracker.performedAction(uuid, System.currentTimeMillis());
         } catch (Exception e) {
             errorLogger.error(e, ErrorContext.builder().related(event).build());
         }
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onMove(PlayerMoveEvent event) {
-        event(event);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

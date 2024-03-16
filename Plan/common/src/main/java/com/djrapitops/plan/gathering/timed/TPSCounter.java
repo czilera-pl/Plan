@@ -56,7 +56,7 @@ public abstract class TPSCounter extends TaskSystem.Task {
 
     public void register(RunnableFactory runnableFactory) {
         long delay = TimeAmount.toTicks(1L, TimeUnit.MINUTES);
-        long period = TimeAmount.toTicks(1L, TimeUnit.SECONDS);
+        long period = TimeAmount.toTicks(5L, TimeUnit.SECONDS);
         runnableFactory.create(this).runTaskTimer(delay, period);
     }
 
