@@ -14,29 +14,26 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with Plan. If not, see <https://www.gnu.org/licenses/>.
  */
-package com.djrapitops.plan.delivery.formatting.time;
+package com.djrapitops.plan.delivery.domain.mutators;
 
-import com.djrapitops.plan.delivery.formatting.Formatter;
+import com.djrapitops.plan.delivery.domain.DateObj;
+import com.djrapitops.plan.utilities.comparators.DateHolderRecentComparator;
 
-import java.text.SimpleDateFormat;
-import java.util.TimeZone;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * Formatter for a timestamp in ISO-8601 format without the clock, without applying timezone offset.
- *
  * @author AuroraLS3
  */
-public class ISO8601NoClockTZIndependentFormatter implements Formatter<Long> {
+public class DateObjMutator<T> {
 
-    @Override
-    public String apply(Long date) {
-        return date > 0 ? format(date) : "-";
-    }
+    private final List<DateObj<T>> dateObjects;
 
-    private String format(Long date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    public DateObjMutator(List<DateObj<T>> dateObjects) {this.dateObjects = dateObjects;}
 
-        return dateFormat.format(date);
+    public Optional<DateObj<T>> mostRecent() {
+        if (dateObjects.isEmpty()) return Optional.empty();
+        dateObjects.sort(new DateHolderRecentComparator());
+        return Optional.of(dateObjects.get(0));
     }
 }

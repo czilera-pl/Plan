@@ -2,7 +2,7 @@ import org.spongepowered.gradle.plugin.config.PluginLoaders
 import org.spongepowered.gradle.vanilla.repository.MinecraftPlatform
 
 plugins {
-    id "org.spongepowered.gradle.plugin" version "2.2.0"
+    id "org.spongepowered.gradle.plugin" version "2.3.0"
     id "org.spongepowered.gradle.vanilla" version "0.2.1-SNAPSHOT"
 }
 
@@ -15,7 +15,7 @@ dependencies {
     shadow "org.bstats:bstats-sponge:$bstatsVersion"
 
     annotationProcessor "org.spongepowered:spongeapi:$spongeVersion"
-    compileOnly "org.spongepowered:mixin:0.8.6"
+    compileOnly "org.spongepowered:mixin:0.8.7"
 
     testImplementation "org.spongepowered:spongeapi:$spongeVersion"
     testImplementation project(path: ":common", configuration: 'testArtifacts')
@@ -69,7 +69,7 @@ sponge {
 
 minecraft {
     version("1.16.5")
-    platform(MinecraftPlatform.JOINED)
+    platform(MinecraftPlatform.SERVER)
 }
 
 compileJava {
