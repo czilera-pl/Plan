@@ -17,12 +17,15 @@
 package extension;
 
 import com.djrapitops.plan.PlanSystem;
+import com.djrapitops.plan.TaskSystem;
 import com.djrapitops.plan.commands.PlanCommand;
 import com.djrapitops.plan.delivery.DeliveryUtilities;
 import com.djrapitops.plan.delivery.export.Exporter;
 import com.djrapitops.plan.delivery.formatting.Formatters;
 import com.djrapitops.plan.delivery.rendering.json.graphs.Graphs;
 import com.djrapitops.plan.delivery.webserver.Addresses;
+import com.djrapitops.plan.delivery.webserver.http.WebServer;
+import com.djrapitops.plan.gathering.ServerSensor;
 import com.djrapitops.plan.identification.ServerUUID;
 import com.djrapitops.plan.settings.ConfigSystem;
 import com.djrapitops.plan.settings.config.PlanConfig;
@@ -32,7 +35,6 @@ import com.djrapitops.plan.storage.database.Database;
 import com.djrapitops.plan.storage.file.PlanFiles;
 import com.djrapitops.plan.storage.file.PublicHtmlFiles;
 import com.djrapitops.plan.utilities.java.Maps;
-import javassist.tools.web.Webserver;
 import org.junit.jupiter.api.extension.*;
 import utilities.RandomData;
 import utilities.dagger.PlanPluginComponent;
@@ -88,9 +90,11 @@ public class FullSystemExtension implements ParameterResolver, BeforeAllCallback
                 .put(LocaleSystem.class, () -> planSystem.getLocaleSystem())
                 .put(Addresses.class, () -> planSystem.getDeliveryUtilities().getAddresses())
                 .put(PublicHtmlFiles.class, () -> planSystem.getDeliveryUtilities().getPublicHtmlFiles())
-                .put(Webserver.class, () -> planSystem.getWebServerSystem().getWebServer())
+                .put(WebServer.class, () -> planSystem.getWebServerSystem().getWebServer())
                 .put(Exporter.class, () -> planSystem.getExportSystem().getExporter())
                 .put(Graphs.class, () -> planSystem.getDeliveryUtilities().getGraphs())
+                .put(TaskSystem.class, () -> planSystem.getTaskSystem())
+                .put(ServerSensor.class, () -> planSystem.getGatheringUtilities().getServerSensor())
                 .build();
     }
 
